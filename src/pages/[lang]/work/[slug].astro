@@ -1,0 +1,167 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Mosaic from '../../../components/Mosaic.astro';
+import { LANGS, projects, t, zainModes } from '../../../data/site';
+import type { Lang, Project, Block } from '../../../data/types';
+
+export function getStaticPaths() {
+  return LANGS.flatMap((lang) =>
+    projects(lang).map((p, i, all) => ({
+      params: { lang, slug: p.slug },
+      props: { p, next: all[(i + 1) % all.length] },
+    })),
+  );
+}
+const lang = Astro.params.lang as Lang;
+const { p, next } = Astro.props as { p: Project; next: Project };
+const s = t[lang];
+const label = s.cs.view;
+const slug = (x: string) => x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const ids = p.blocks.map((b: Block) => slug(b.heading));
+---
+<Base lang={lang} path={`work/${p.slug}/`} title={p.client} description={p.summary} ogImage={p.cover[0].img}>
+  <article class="cs">
+    <header class="wrap cs-head">
+      <a class="cs-head__back" href={`/${lang}/#work`}>{s.cs.all}</a>
+      <p class="cs-head__client">{p.client}, {p.year}</p>
+      <h1>{p.title}</h1>
+      <p class="cs-head__summary">{p.summary}</p>
+      <ul class="tags">{p.tags.map((x) => <li style="background:var(--paper)">{x}</li>)}</ul>
+      <dl class="cs-meta">
+        {p.meta.map((m) => <div><dt>{m.label}</dt><dd>{m.value}</dd></div>)}
+      </dl>
+    </header>
+
+    <div class="wrap cs-hero">
+      <Mosaic shots={p.hero} eager label={label} captions={false} />
+    </div>
+
+    <section class="wrap" aria-labelledby="stats-title">
+      <h2 id="stats-title" class="vh">{s.cs.stats}</h2>
+      <ul class="cs-stats">
+        {p.stats.map((st) => <li><strong>{st.value}</strong><span>{st.label}</span></li>)}
+      </ul>
+    </section>
+
+    <div class="wrap cs-body">
+      <nav class="toc" aria-label={s.cs.contents}>
+        <p>{s.cs.contents}</p>
+        <ul>{p.blocks.map((b, i) => <li><a href={`#${ids[i]}`}>{b.heading}</a></li>)}</ul>
+      </nav>
+
+      <div class="cs-content">
+        {p.blocks.map((b, bi) => {
+          const id = ids[bi];
+          if (b.type === 'split') return (
+            <section class="sec" id={id} aria-labelledby={`${id}-h`}>
+              <h2 id={`${id}-h`} class="h2">{b.heading}</h2>
+              {b.paras?.map((x) => <p>{x}</p>)}
+              {b.points && <dl class="points points--grid">{b.points.map((pt) => <div><dt>{pt.title}</dt><dd>{pt.text}</dd></div>)}</dl>}
+              <Mosaic shots={b.shots} label={label} />
+            </section>
+          );
+          if (b.type === 'list') return (
+            <section class="sec" id={id} aria-labelledby={`${id}-h`}>
+              <h2 id={`${id}-h`} class="h2">{b.heading}</h2>
+              {b.intro && <p class="lead">{b.intro}</p>}
+              <dl class="points points--grid">{b.points.map((pt) => <div><dt>{pt.title}</dt><dd>{pt.text}</dd></div>)}</dl>
+            </section>
+          );
+          if (b.type === 'decisions') return (
+            <section class="sec" id={id} aria-labelledby={`${id}-h`}>
+              <h2 id={`${id}-h`} class="h2">{b.heading}</h2>
+              <div class="decs">
+                {b.items.map((d) => (
+                  <div class="dec">
+                    <div class="dec__text">
+                      <h3 class="h3">{d.title}</h3>
+                      {d.paras?.map((x) => <p>{x}</p>)}
+                      {d.bullets && <ul class="bullets">{d.bullets.map((x) => <li>{x}</li>)}</ul>}
+                    </div>
+                    {d.live === 'segments' && (
+                      <div class="live">
+                        <div class="live__ctl">
+                          <fieldset class="seg">
+                            <legend>{s.cs.live}</legend>
+                            <div class="seg__opts">
+                              {zainModes.map((m, i) => (
+                                <label><input type="radio" name="segment" value={m.id} checked={i === 0} /><span>{m.name}</span></label>
+                              ))}
+                            </div>
+                          </fieldset>
+                          <div aria-live="polite">
+                            <p class="tokens__title">{s.cs.tokens}</p>
+                            {zainModes.map((m) => (
+                              <dl class="tokens__set" data-mode={m.id}>
+                                <div><dt>Schemes/Primary</dt><dd><i style={`background:${m.primary}`}></i>{m.primary}</dd></div>
+                                <div><dt>Schemes/Tertiary</dt><dd><i style={`background:${m.tertiary}`}></i>{m.tertiary}</dd></div>
+                                <div><dt>Schemes/Primary Container</dt><dd><i style={`background:${m.container}`}></i>{m.container}</dd></div>
+                                <div><dt>Strings/Master Swirl</dt><dd>{m.swirl}</dd></div>
+                              </dl>
+                            ))}
+                          </div>
+                        </div>
+                        <div class="live__phone">
+                          {zainModes.map((m) => <img data-mode={m.id} src={`/img/${m.img}.webp`} width="720" height="1560" loading="lazy" alt={`${p.client}, ${m.name}`} />)}
+                        </div>
+                      </div>
+                    )}
+                    {d.shots?.length ? <Mosaic shots={d.shots} label={label} /> : null}
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+          if (b.type === 'row' || b.type === 'wide') return (
+            <section class="sec" id={id} aria-labelledby={`${id}-h`}>
+              <h2 id={`${id}-h`} class="h2">{b.heading}</h2>
+              {b.type === 'row' && b.intro && <p class="lead">{b.intro}</p>}
+              {b.type === 'wide' && b.paras?.map((x) => <p>{x}</p>)}
+              {b.shots.length > 4 && b.shots.every((x) => x.kind === 'phone')
+                ? [<Mosaic shots={b.shots.slice(0, 4)} label={label} />, <Mosaic shots={b.shots.slice(4)} label={label} />]
+                : b.shots.every((x) => x.kind === 'phone') || b.shots.length <= 2
+                  ? <Mosaic shots={b.shots} label={label} />
+                  : b.shots.map((sh) => <Mosaic shots={[sh]} label={label} />)}
+            </section>
+          );
+          if (b.type === 'close') return (
+            <section class="sec close" id={id} aria-labelledby={`${id}-h`}>
+              <h2 id={`${id}-h`} class="h2">{b.heading}</h2>
+              <ul class="bullets">{b.points.map((x) => <li>{x}</li>)}</ul>
+              {b.reflection && (
+                <div>
+                  <p class="close__label">{s.cs.reflection}</p>
+                  <p class="close__quote">{b.reflection}</p>
+                </div>
+              )}
+              {b.links && <p class="close__links">{b.links.map((l) => <a class="btn btn--ink" href={l.href} target="_blank" rel="noopener">{l.label}</a>)}</p>}
+            </section>
+          );
+          return null;
+        })}
+      </div>
+    </div>
+
+    <nav class="next" aria-label={s.cs.next}>
+      <a class="wrap" href={`/${lang}/work/${next.slug}/`}>
+        <span class="next__label">{s.cs.next}</span>
+        <span class="next__client">{next.client}</span>
+        <span class="next__title">{next.title}</span>
+      </a>
+    </nav>
+  </article>
+
+  <script>
+    // Mark the section in view in the contents list.
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+    if (links.length) {
+      const io = new IntersectionObserver((es) => {
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          links.forEach((l) => l.setAttribute('aria-current', String(l.hash === `#${e.target.id}`)));
+        });
+      }, { rootMargin: '-30% 0px -60% 0px' });
+      links.forEach((l) => { const el = document.querySelector(l.hash); if (el) io.observe(el); });
+    }
+  </script>
+</Base>

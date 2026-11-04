@@ -1,0 +1,307 @@
+{
+"zain/home": [
+720,
+1560,
+3314
+],
+"zain/home-business": [
+720,
+1560,
+3314
+],
+"zain/home-highend": [
+720,
+1560,
+3314
+],
+"zain/home-r1": [
+720,
+1560,
+3202
+],
+"zain/home-old": [
+720,
+1434,
+1434
+],
+"zain/my-bill": [
+720,
+1560,
+2718
+],
+"zain/my-zain": [
+720,
+1560,
+4106
+],
+"zain/shop": [
+720,
+1560,
+3604
+],
+"zain/my-profile": [
+720,
+1560,
+2744
+],
+"zain/ds-segments": [
+1440,
+1033,
+0
+],
+"zain/ds-foundations": [
+1440,
+1774,
+0
+],
+"zain/ds-main-card": [
+1440,
+1116,
+0
+],
+"maxit/welcome-light": [
+720,
+1560,
+2640
+],
+"maxit/welcome-dark": [
+720,
+1560,
+2640
+],
+"maxit/marketplace": [
+720,
+1560,
+5180
+],
+"maxit/my-line": [
+720,
+1560,
+2642
+],
+"maxit/orange-money": [
+720,
+1560,
+2404
+],
+"maxit/profile": [
+720,
+1560,
+2394
+],
+"maxit/old-my-orange": [
+720,
+1560,
+1908
+],
+"maxit/old-my-place": [
+720,
+1280,
+1280
+],
+"maxit/old-orange-money": [
+720,
+1558,
+1558
+],
+"maxit/ds-light-dark": [
+1440,
+811,
+0
+],
+"maxit/ds-scale": [
+1440,
+1662,
+0
+],
+"maxit/ds-directions": [
+1440,
+970,
+0
+],
+"maxit/slide-literacy": [
+1467,
+825,
+0
+],
+"maxit/slide-buttons": [
+1467,
+825,
+0
+],
+"maxit/slide-navmap": [
+1467,
+825,
+0
+],
+"mt/home-old": [
+1600,
+1087,
+4257
+],
+"mt/home-blue": [
+1600,
+1087,
+4233
+],
+"mt/home": [
+1600,
+1087,
+4059
+],
+"mt/fibre": [
+1600,
+1087,
+3004
+],
+"mt/plans": [
+1600,
+1087,
+4227
+],
+"mt/catalogue": [
+1600,
+1087,
+3573
+],
+"mt/product": [
+1600,
+1087,
+2951
+],
+"mt/service": [
+1600,
+1087,
+4085
+],
+"mt/app-home": [
+720,
+1560,
+3878
+],
+"mt/app-wifi": [
+720,
+1558,
+1558
+],
+"mt/app-plans": [
+720,
+1560,
+2036
+],
+"mt/app-smartphones": [
+720,
+1560,
+2363
+],
+"mt/app-devices": [
+720,
+1560,
+1620
+],
+"mt/app-entertainment": [
+720,
+1560,
+1702
+],
+"mt/ds-rebrand": [
+1440,
+1047,
+0
+],
+"mt/ds-ui-kit": [
+1440,
+2688,
+0
+],
+"mt/ds-app-roles": [
+2000,
+1430,
+0
+],
+"omni/app-welcome": [
+720,
+1560,
+3146
+],
+"omni/app-lines": [
+720,
+1560,
+3158
+],
+"omni/app-wallet": [
+720,
+1560,
+1968
+],
+"omni/app-loyalty": [
+720,
+1560,
+2188
+],
+"omni/app-shop": [
+720,
+1560,
+4272
+],
+"omni/web-home": [
+1440,
+979,
+4098
+],
+"omni/web-lines": [
+1440,
+979,
+1165
+],
+"omni/web-invoices": [
+1440,
+979,
+1957
+],
+"omni/web-shop": [
+1440,
+979,
+4645
+],
+"omni/ct-login": [
+1920,
+1080,
+0
+],
+"omni/ct-products": [
+1920,
+1080,
+0
+],
+"omni/ct-service": [
+1600,
+1087,
+1786
+],
+"omni/360": [
+1600,
+1087,
+2514
+],
+"omni/tokens-types": [
+1778,
+1000,
+0
+],
+"omni/tokens-why": [
+1778,
+1000,
+0
+],
+"omni/tokens-button": [
+1778,
+1000,
+0
+],
+"omni/suite-modules": [
+1067,
+600,
+0
+]
+}

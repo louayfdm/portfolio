@@ -1,0 +1,20 @@
+---
+// Root: send visitors to their language. English is the default.
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Louay Ben Hassine, Lead Product Designer</title>
+    <link rel="canonical" href="/en/" />
+    <link rel="alternate" hreflang="en" href="/en/" />
+    <link rel="alternate" hreflang="fr" href="/fr/" />
+    <meta http-equiv="refresh" content="0; url=/en/" />
+    <script is:inline>
+      var l = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+      location.replace(/^fr/i.test(l) ? '/fr/' : '/en/');
+    </script>
+  </head>
+  <body><p><a href="/en/">English</a> · <a href="/fr/">Français</a></p></body>
+</html>

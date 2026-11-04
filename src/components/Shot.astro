@@ -1,0 +1,16 @@
+---
+import meta from '../../img-meta.json';
+import type { Shot } from '../data/types';
+
+interface Props { shot: Shot; label?: string; eager?: boolean; caption?: boolean }
+const { shot, label = 'Open full screen', eager = false, caption = true } = Astro.props;
+const m = (meta as Record<string, number[]>)[shot.img] ?? [1200, 800, 0];
+const src = `/img/${shot.img}.webp`;
+const full = m[2] ? `/img/${shot.img}-full.webp` : src;
+---
+<figure class={`shot shot--${shot.kind}`}>
+  <a class="shot__frame" href={full} data-full={full} data-alt={shot.alt} aria-label={`${shot.alt}. ${label}`}>
+    <img src={src} alt={shot.alt} width={m[0]} height={m[1]} loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : 'auto'} />
+  </a>
+  {caption && shot.caption && <figcaption>{shot.caption}</figcaption>}
+</figure>

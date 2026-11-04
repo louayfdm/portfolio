@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import { t } from '../data/site';
+const s = t.en;
+---
+<Base lang="en" path="" title={s.notFound.title}>
+  <section class="wrap simple">
+    <h1 class="h1">{s.notFound.title}</h1>
+    <p class="lead">{t.fr.notFound.title}.</p>
+    <p class="simple__actions"><a class="btn btn--ink" href="/en/">{s.notFound.back}</a> <a class="btn btn--tone" href="/fr/">{t.fr.notFound.back}</a></p>
+  </section>
+</Base>

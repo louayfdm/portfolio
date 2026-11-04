@@ -1,0 +1,179 @@
+---
+import Base from '../../layouts/Base.astro';
+import Logo from '../../components/Logo.astro';
+import Mosaic from '../../components/Mosaic.astro';
+import { LANGS, projects, t, CONTACT } from '../../data/site';
+import type { Lang } from '../../data/types';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+const lang = Astro.params.lang as Lang;
+const s = t[lang];
+const other: Lang = lang === 'en' ? 'fr' : 'en';
+const list = projects(lang);
+const redirect = `${Astro.site?.toString().replace(/\/$/, '')}/${lang}/thanks/`;
+---
+<Base lang={lang} path="" bar={false}>
+  <div class="home">
+    <aside class="side" aria-label={s.hero.h1a}>
+      <a class="side__logo" href={`/${lang}/`}><Logo label={s.nav.home} /></a>
+      <div>
+        <h1 class="side__name">{s.hero.h1a}</h1>
+        <p class="side__role">{s.hero.role}</p>
+        <p class="side__lead">{s.hero.lead}</p>
+        <p class="side__status"><i aria-hidden="true"></i>{s.hero.available}</p>
+        <div class="side__acts">
+          <button class="btn btn--ink" type="button" data-copy={CONTACT.email} data-done={s.hero.copied}>{s.hero.copy}</button>
+          <a class="btn btn--tone" href={s.hero.cv} download>{s.hero.secondary}</a>
+        </div>
+      </div>
+      <nav class="side__nav" aria-label="Main">
+        <a href="#work">{s.nav.work}</a>
+        <a href="#about">{s.nav.about}</a>
+        <a href="#contact">{s.nav.contact}</a>
+        <a href={CONTACT.linkedin} target="_blank" rel="me noopener">LinkedIn</a>
+        <a href={`/${other}/`} hreflang={other} lang={other} aria-label={s.nav.switchLabel}>{s.nav.switch}</a>
+      </nav>
+    </aside>
+
+    <div class="feed">
+      <section id="work" aria-labelledby="work-title">
+        <div class="feed__head">
+          <h2 id="work-title" class="h2">{s.work.heading}</h2>
+          <p class="muted">{s.work.intro}</p>
+        </div>
+        <ul class="cards">
+          {list.map((p, i) => (
+            <li class="card">
+              <Mosaic shots={p.cover} link={false} eager={i === 0} captions={false} />
+              <div class="card__body">
+                <div class="card__top">
+                  <h3 class="h3 card__client"><a href={`/${lang}/work/${p.slug}/`}>{p.client}</a></h3>
+                  <span class="card__year">{p.year}</span>
+                </div>
+                <div>
+                  <p class="card__title">{p.title}</p>
+                  <p class="muted" style="margin-top:10px">{p.role}</p>
+                </div>
+                <div class="card__foot">
+                  <ul class="tags">{p.tags.map((x) => <li>{x}</li>)}</ul>
+                  <dl class="card__stats">
+                    {p.stats.slice(0, 2).map((st) => <div><dt>{st.value}</dt><dd>{st.label}</dd></div>)}
+                  </dl>
+                  <span class="card__open" aria-hidden="true">{s.cs.read}</span>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section id="about" class="panel" aria-labelledby="about-title">
+        <h2 id="about-title" class="h2">{s.about.heading}</h2>
+        <div class="about__text">{s.about.paras.map((x) => <p>{x}</p>)}</div>
+        <dl class="facts">
+          <div><dt>{s.about.exp}</dt><dd><ul class="exp">{s.about.expList.map((e) => <li><strong>{e.role}</strong><span>{e.org}, {e.when}</span></li>)}</ul></dd></div>
+          <div><dt>{s.about.do}</dt><dd><ul>{s.about.doList.map((d) => <li>{d}</li>)}</ul></dd></div>
+          <div><dt>{s.about.tools}</dt><dd>{s.about.toolsList}</dd></div>
+          <div><dt>{s.about.edu}</dt><dd>{s.about.eduText}</dd></div>
+          <div><dt>{s.about.langs}</dt><dd>{s.about.langsText}</dd></div>
+        </dl>
+      </section>
+
+      <section id="contact" class="panel contact" aria-labelledby="contact-title">
+        <div>
+          <h2 id="contact-title" class="h2">{s.contact.heading}</h2>
+          <p class="lead" style="margin-top:16px">{s.contact.lead}</p>
+          <p class="contact__direct"><span class="muted">{s.contact.direct}</span>
+            <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+            <a href={CONTACT.linkedin} target="_blank" rel="me noopener">linkedin.com/in/louaybnh</a>
+          </p>
+        </div>
+        <form class="form" action="https://api.web3forms.com/submit" method="POST" data-ok={s.contact.ok} data-error={s.contact.error} data-sending={s.contact.sending}>
+          <input type="hidden" name="access_key" value={CONTACT.web3formsKey} />
+          <input type="hidden" name="subject" value={s.contact.subject} />
+          <input type="hidden" name="from_name" value="Portfolio" />
+          <input type="hidden" name="redirect" value={redirect} />
+          <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <label class="field"><span>{s.contact.name}</span><input name="name" autocomplete="name" required /></label>
+          <label class="field"><span>{s.contact.email}</span><input name="email" type="email" autocomplete="email" required /></label>
+          <label class="field"><span>{s.contact.company}</span><input name="company" autocomplete="organization" /></label>
+          <label class="field"><span>{s.contact.message}</span><textarea name="message" rows="6" required aria-describedby="msg-hint"></textarea><small id="msg-hint">{s.contact.messageHint}</small></label>
+          <button class="btn btn--ink" type="submit">{s.contact.send}</button>
+          <p class="form__status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <footer class="foot">
+        <div class="foot__mark"><Logo /><span>© {new Date().getFullYear()} Louay Ben Hassine</span></div>
+        <ul>
+          <li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+          <li><a href={CONTACT.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
+        </ul>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Copy email, with visible and announced feedback. Falls back to mailto.
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+      const label = b.textContent;
+      b.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(b.dataset.copy!);
+          b.textContent = b.dataset.done ?? label;
+          b.setAttribute('aria-live', 'polite');
+          setTimeout(() => { b.textContent = label; }, 2400);
+        } catch {
+          location.href = `mailto:${b.dataset.copy}`;
+        }
+      });
+    });
+
+    // Highlight the section in view in the side nav.
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.side__nav a[href^="#"]')];
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        links.forEach((l) => l.toggleAttribute('aria-current', l.hash === `#${e.target.id}`));
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    ['work', 'about', 'contact'].forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+
+    // Send the form in place. Without script, Web3Forms posts and redirects to the thanks page.
+    const form = document.querySelector<HTMLFormElement>('.form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const status = form.querySelector<HTMLElement>('.form__status')!;
+        const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+        const label = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = form.dataset.sending ?? '…';
+        status.dataset.state = '';
+        status.textContent = '';
+        try {
+          const data = Object.fromEntries(new FormData(form).entries());
+          delete (data as Record<string, unknown>).redirect;
+          const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(data),
+          });
+          const json = await res.json();
+          if (!res.ok || !json.success) throw new Error(json.message);
+          form.reset();
+          status.textContent = form.dataset.ok ?? '';
+          status.dataset.state = 'ok';
+        } catch {
+          status.textContent = form.dataset.error ?? '';
+          status.dataset.state = 'error';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = label;
+        }
+      });
+    }
+  </script>
+</Base>

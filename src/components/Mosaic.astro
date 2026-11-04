@@ -1,0 +1,34 @@
+---
+// Screens composed as blocks cut by a thin channel, the way the logo is built.
+import meta from '../../img-meta.json';
+import type { Shot } from '../data/types';
+
+interface Props { shots: Shot[]; link?: boolean; eager?: boolean; label?: string; captions?: boolean; class?: string }
+const { shots, link = true, eager = false, label = 'Open full screen', captions = true, class: cls } = Astro.props;
+const M = meta as Record<string, number[]>;
+const phones = shots.filter((s) => s.kind === 'phone');
+const wides = shots.filter((s) => s.kind !== 'phone');
+const layout = wides.length === 0 ? `p${Math.min(phones.length, 4)}` : phones.length === 0 ? `w${Math.min(wides.length, 2)}` : 'wp';
+const ordered = [...wides, ...phones];
+const caps = captions ? shots.filter((s) => s.caption) : [];
+const img = (s: Shot) => {
+  const m = M[s.img] ?? [1200, 800, 0];
+  return { src: `/img/${s.img}.webp`, full: m[2] ? `/img/${s.img}-full.webp` : `/img/${s.img}.webp`, w: m[0], h: m[1] };
+};
+---
+<figure class:list={['mosaic', `mosaic--${layout}`, cls]}>
+  <div class="mosaic__grid">
+    {ordered.map((s) => {
+      const i = img(s);
+      const pic = <img src={i.src} alt={s.alt} width={i.w} height={i.h} loading={eager ? 'eager' : 'lazy'} decoding="async" />;
+      return link
+        ? <a class={`mosaic__b mosaic__b--${s.kind}`} href={i.full} data-full={i.full} data-alt={s.alt} aria-label={`${s.alt}. ${label}`}>{pic}</a>
+        : <div class={`mosaic__b mosaic__b--${s.kind}`}>{pic}</div>;
+    })}
+  </div>
+  {caps.length > 0 && (
+    <figcaption class="mosaic__cap">
+      {caps.length === 1 ? caps[0].caption : <ul>{caps.map((s) => <li>{s.caption}</li>)}</ul>}
+    </figcaption>
+  )}
+</figure>

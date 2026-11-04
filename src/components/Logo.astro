@@ -1,0 +1,12 @@
+---
+interface Props { label?: string; class?: string }
+const { label, class: cls } = Astro.props;
+---
+<svg class={cls} viewBox="0 0 96 40" fill="currentColor" role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'} focusable="false">
+  <path d="M12 28H14V0H40V26H28V12H26V40H0V0H12V28Z" />
+  <path d="M40 40H28V28H40V40Z" />
+  <path d="M54 40H42V28H54V40Z" />
+  <path d="M68 40H56V26H42V0H68V40ZM54 14H56V12H54V14Z" fill-rule="evenodd" />
+  <path d="M96 40H70V12H82V28H84V0H96V40Z" />
+  <path d="M82 4H80V6H82V10H70V0H82V4Z" />
+</svg>

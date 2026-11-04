@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import { LANGS, t } from '../../data/site';
+import type { Lang } from '../../data/types';
+export function getStaticPaths() { return LANGS.map((lang) => ({ params: { lang } })); }
+const lang = Astro.params.lang as Lang;
+const s = t[lang];
+---
+<Base lang={lang} path="thanks/" title={s.thanks.title}>
+  <section class="wrap simple">
+    <h1 class="h1">{s.thanks.title}</h1>
+    <p class="lead">{s.thanks.text}</p>
+    <a class="btn btn--ink" href={`/${lang}/`}>{s.thanks.back}</a>
+  </section>
+</Base>

@@ -1,0 +1,93 @@
+---
+import '@fontsource-variable/schibsted-grotesk';
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import { t, CONTACT } from '../data/site';
+import type { Lang } from '../data/types';
+
+interface Props { lang: Lang; title?: string; description?: string; path: string; bar?: boolean; ogImage?: string }
+const { lang, title, description, path, bar = true, ogImage = 'zain/ds-segments' } = Astro.props;
+const s = t[lang];
+const other: Lang = lang === 'en' ? 'fr' : 'en';
+const pageTitle = title ? `${title}, Louay Ben Hassine` : s.meta.title;
+const desc = description ?? s.meta.description;
+const site = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const url = (l: Lang) => `${site}/${l}/${path}`;
+const home = `/${lang}/`;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={url(lang)} />
+    <link rel="alternate" hreflang="en" href={url('en')} />
+    <link rel="alternate" hreflang="fr" href={url('fr')} />
+    <link rel="alternate" hreflang="x-default" href={url('en')} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={url(lang)} />
+    <meta property="og:image" content={`${site}/img/${ogImage}.webp`} />
+    <meta name="theme-color" content="#F1F1EE" />
+  </head>
+  <body>
+    <a class="skip" href="#main">{s.nav.skip}</a>
+    {bar && (
+      <header class="bar">
+        <a class="bar__logo" href={home}><Logo label={s.nav.home} /></a>
+        <nav aria-label="Main">
+          <a class="bar__hide" href={`${home}#work`}>{s.nav.work}</a>
+          <a class="bar__hide" href={`${home}#about`}>{s.nav.about}</a>
+          <a href={`/${other}/${path}`} hreflang={other} lang={other} aria-label={s.nav.switchLabel}>{s.nav.switch}</a>
+          <a class="btn btn--ink" href={`${home}#contact`}>{s.nav.cta}</a>
+        </nav>
+      </header>
+    )}
+
+    <slot name="before" />
+    <main id="main">
+      <slot />
+    </main>
+
+    {bar && (
+      <footer class="foot">
+        <div class="foot__mark"><Logo /><span>Louay Ben Hassine, {s.footer.line}</span></div>
+        <ul>
+          <li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+          <li><a href={CONTACT.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
+          <li><a href={`/${other}/${path}`} hreflang={other} lang={other}>{s.nav.switch}</a></li>
+        </ul>
+      </footer>
+    )}
+
+    <dialog class="lightbox" aria-label={s.cs.view}>
+      <form method="dialog"><button class="lightbox__close btn btn--ink">{s.cs.close}</button></form>
+      <div class="lightbox__scroll"><img alt="" /></div>
+    </dialog>
+
+    <script>
+      // Full-screen viewer for long screenshots. Without script, the link opens the image itself.
+      const dlg = document.querySelector<HTMLDialogElement>('.lightbox');
+      const img = dlg?.querySelector('img');
+      if (dlg && img && typeof dlg.showModal === 'function') {
+        let opener: HTMLElement | null = null;
+        document.addEventListener('click', (e) => {
+          const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-full]');
+          if (!a || e.metaKey || e.ctrlKey) return;
+          e.preventDefault();
+          opener = a;
+          img.src = a.dataset.full!;
+          img.alt = a.dataset.alt ?? '';
+          dlg.showModal();
+          dlg.querySelector('.lightbox__scroll')!.scrollTop = 0;
+        });
+        dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+        dlg.addEventListener('close', () => { img.removeAttribute('src'); opener?.focus(); });
+      }
+    </script>
+  </body>
+</html>
