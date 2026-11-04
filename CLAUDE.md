@@ -5,7 +5,7 @@ The owner is not a developer. Explain in plain French, do the technical work you
 ## Project
 - Astro 5 static site, deployed on Vercel from GitHub. `npm run dev`, `npm run build`.
 - Bilingual: English (default) at `/en/`, French at `/fr/`. Root `/` redirects by browser language.
-- Content lives in `src/data/*.ts` (one object per language). Layout in `src/pages/[lang]/`, `src/layouts/Base.astro`, `src/components/Shot.astro`. Styles and tokens in `src/styles/global.css`.
+- Content lives in `src/data/*.ts` (one object per language). Layout in `src/pages/[lang]/`, `src/layouts/Base.astro`, `src/components/Mosaic.astro` (screens in blocks), `src/components/Logo.astro`. Styles and tokens in `src/styles/global.css`.
 - Images in `public/img/<project>/<name>.webp` (top crop) and `<name>-full.webp` (full screen, opened in the lightbox). Sizes in `img-meta.json`. To add an image: export PNG, convert to WebP, add its size to `img-meta.json`.
 - Contact form: Web3Forms, access key in `src/data/site.ts` (`CONTACT.web3formsKey`). Public by design.
 
